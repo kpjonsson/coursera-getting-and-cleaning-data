@@ -18,8 +18,8 @@ colnames(train_data) = features$V2 # Set the feature names as column names
 colnames(test_data) = features$V2
 
 ## Merge data frames (instruction no. 1)
-test = cbind(label = test_labels$V1, subject = test_subjects$V1, test_data)
-train = cbind(label = train_labels$V1, subject = train_subjects$V1, train_data)
+test = cbind(activity = test_labels$V1, subject = test_subjects$V1, test_data)
+train = cbind(activity = train_labels$V1, subject = train_subjects$V1, train_data)
 
 test_train = rbind(test, train)
 
@@ -30,13 +30,13 @@ sd_idx = grep('std', colnames(test_train))
 test_train = test_train[, c(1, 2, mean_idx, sd_idx)]
 
 ## Label the acitvities (instruction no. 3 & 4)
-test_train$label = as.factor(test_train$label)
-levels(test_train$label) = activities$V2
+test_train$activity = as.factor(test_train$activity)
+levels(test_train$activity) = activities$V2
 
 ## Create new data set consisting in averages (per activity and subject)
 ## of variables in previous set (instruction no. 5)
-test_train_melt = reshape2::melt(test_train, id = c('label', 'subject'))
-test_train_avgs = reshape2::dcast(test_train_melt, subject + label ~ variable, mean)
+test_train_melt = reshape2::melt(test_train, id = c('activity', 'subject'))
+test_train_avgs = reshape2::dcast(test_train_melt, subject + activity ~ variable, mean)
 
 ## Write the data
 write.table(test_train_avgs, file = 'project_submission.txt', row.names = F)
